@@ -16,11 +16,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
-fun InteresSimpleScreen(navController: NavHostController) {
-    var tasaInteres by remember { mutableStateOf("") }
-    var tiempo by remember { mutableStateOf("") }
-    var valorFinal by remember { mutableStateOf("") }
-    var valorPresente by remember { mutableStateOf("") }
+fun AnualidadesScreen(navController: NavHostController) {
+    var tasaAnualidad by remember { mutableStateOf("") }
+    var periodoPago by remember { mutableStateOf("") }
+    var anualidad by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 
     Column(
@@ -40,7 +39,7 @@ fun InteresSimpleScreen(navController: NavHostController) {
         }
 
         Text(
-            text = "Interés Simple",
+            text = "Anualidades",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
@@ -55,7 +54,7 @@ fun InteresSimpleScreen(navController: NavHostController) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("¿Qué es el Interés Simple?", fontWeight = FontWeight.Bold)
+                    Text("¿Qué son las Anualidades?", fontWeight = FontWeight.Bold)
                     IconButton(onClick = { expanded = !expanded }) {
                         Icon(
                             imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
@@ -65,9 +64,11 @@ fun InteresSimpleScreen(navController: NavHostController) {
                 }
                 if (expanded) {
                     Text(
-                        text = "El interés simple es el pago por el uso de dinero prestado. Se calcula multiplicando la tasa de interés por el tiempo y el valor presente.\n\n" +
-                                "Fórmula:\nI = VP × i × t\n\n" +
-                                "Ejemplo: Si inviertes $1,000 con una tasa del 5% anual durante 3 años:\nI = 1000 × 0.05 × 3 = $150",
+                        text = "Las anualidades son una serie de pagos iguales que se realizan en intervalos regulares de tiempo. Pueden ser **ordinarias** (al final de cada período) o **anticipadas** (al inicio de cada período).\n\n" +
+                                "**Fórmula para Anualidades Ordinarias:**\n" +
+                                "A = VF * (i / (1 - (1 + i)^-n))\n\n" +
+                                "**Ejemplo:** Si deseas recibir $10,000 al final de cada año durante 5 años con una tasa del 6%:\n" +
+                                "A = 10,000 * (0.06 / (1 - (1.06)^-5)) ≈ $2,374.11",
                         fontSize = 14.sp
                     )
                 }
@@ -76,9 +77,9 @@ fun InteresSimpleScreen(navController: NavHostController) {
 
         // 🔹 Campos de entrada reordenados 🔹
         OutlinedTextField(
-            value = tasaInteres,
-            onValueChange = { tasaInteres = it },
-            label = { Text("Tasa de interés (%)") },
+            value = tasaAnualidad,
+            onValueChange = { tasaAnualidad = it },
+            label = { Text("Tasa de Anualidad (%)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF9130F2),
@@ -87,9 +88,9 @@ fun InteresSimpleScreen(navController: NavHostController) {
         )
 
         OutlinedTextField(
-            value = tiempo,
-            onValueChange = { tiempo = it },
-            label = { Text("Tiempo (años)") },
+            value = periodoPago,
+            onValueChange = { periodoPago = it },
+            label = { Text("Período de Pago (años)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF9130F2),
@@ -98,20 +99,9 @@ fun InteresSimpleScreen(navController: NavHostController) {
         )
 
         OutlinedTextField(
-            value = valorFinal,
-            onValueChange = { valorFinal = it },
-            label = { Text("Valor Final") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF9130F2),
-                cursorColor = Color(0xFF9130F2)
-            )
-        )
-
-        OutlinedTextField(
-            value = valorPresente,
-            onValueChange = { valorPresente = it },
-            label = { Text("Valor Presente") },
+            value = anualidad,
+            onValueChange = { anualidad = it },
+            label = { Text("Anualidad") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF9130F2),
@@ -124,8 +114,7 @@ fun InteresSimpleScreen(navController: NavHostController) {
             onClick = { /* Aquí no se realiza ningún cálculo aún */ },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9130F2))
         ) {
-            Text("Calcular Interés", color = Color.White)
+            Text("Calcular Anualidad", color = Color.White)
         }
     }
 }
-

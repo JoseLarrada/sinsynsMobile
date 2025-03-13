@@ -15,13 +15,14 @@ import androidx.navigation.NavHostController
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 
+
 @Composable
-fun InteresSimpleScreen(navController: NavHostController) {
+fun InteresCompuestoScreen(navController: NavHostController) {
     var tasaInteres by remember { mutableStateOf("") }
     var tiempo by remember { mutableStateOf("") }
-    var valorFinal by remember { mutableStateOf("") }
+    var valorFuturo by remember { mutableStateOf("") }
     var valorPresente by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) } // Estado para la tarjeta desplegable
 
     Column(
         modifier = Modifier
@@ -29,9 +30,9 @@ fun InteresSimpleScreen(navController: NavHostController) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(10.dp)) // Mueve el botón de regresar más abajo
 
-        // 🔹 Botón de regresar 🔹
+        // 🔹 Botón de regresar
         Button(
             onClick = { navController.popBackStack() },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9130F2))
@@ -39,13 +40,14 @@ fun InteresSimpleScreen(navController: NavHostController) {
             Text("< Regresar", color = Color.White)
         }
 
+        // 🔹 Título
         Text(
-            text = "Interés Simple",
+            text = "Interés Compuesto",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
 
-        // 🔽 Tarjeta Expandible con Definición y Ejemplo 🔽
+        // 🔽 Tarjeta Expandible con Definición y Fórmula 🔽
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
@@ -55,7 +57,7 @@ fun InteresSimpleScreen(navController: NavHostController) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("¿Qué es el Interés Simple?", fontWeight = FontWeight.Bold)
+                    Text("¿Qué es el Interés Compuesto?", fontWeight = FontWeight.Bold)
                     IconButton(onClick = { expanded = !expanded }) {
                         Icon(
                             imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
@@ -65,16 +67,22 @@ fun InteresSimpleScreen(navController: NavHostController) {
                 }
                 if (expanded) {
                     Text(
-                        text = "El interés simple es el pago por el uso de dinero prestado. Se calcula multiplicando la tasa de interés por el tiempo y el valor presente.\n\n" +
-                                "Fórmula:\nI = VP × i × t\n\n" +
-                                "Ejemplo: Si inviertes $1,000 con una tasa del 5% anual durante 3 años:\nI = 1000 × 0.05 × 3 = $150",
+                        text = "El interés compuesto es la acumulación de intereses que generan más intereses en cada período. Se calcula con la fórmula:\n\n" +
+                                "VF = VP (1 + i)^n\n\n" +
+                                "Donde:\n" +
+                                "• VF = Valor Futuro\n" +
+                                "• VP = Valor Presente\n" +
+                                "• i = Tasa de interés\n" +
+                                "• n = Número de periodos\n\n" +
+                                "Ejemplo: Si inviertes $1,000 con una tasa del 5% anual durante 3 años:\n" +
+                                "VF = 1000 × (1 + 0.05)^3 = $1,157.63",
                         fontSize = 14.sp
                     )
                 }
             }
         }
 
-        // 🔹 Campos de entrada reordenados 🔹
+        // 🔹 Campos de entrada
         OutlinedTextField(
             value = tasaInteres,
             onValueChange = { tasaInteres = it },
@@ -98,9 +106,9 @@ fun InteresSimpleScreen(navController: NavHostController) {
         )
 
         OutlinedTextField(
-            value = valorFinal,
-            onValueChange = { valorFinal = it },
-            label = { Text("Valor Final") },
+            value = valorFuturo,
+            onValueChange = { valorFuturo = it },
+            label = { Text("Valor Futuro") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF9130F2),
@@ -119,13 +127,12 @@ fun InteresSimpleScreen(navController: NavHostController) {
             )
         )
 
-        // 🔹 Botón de Calcular (Sin Acción) 🔹
+        // 🔹 Botón (sin cálculos por ahora)
         Button(
-            onClick = { /* Aquí no se realiza ningún cálculo aún */ },
+            onClick = { /* Implementar cálculos después */ },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9130F2))
         ) {
             Text("Calcular Interés", color = Color.White)
         }
     }
 }
-

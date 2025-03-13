@@ -22,6 +22,10 @@ class MainActivity : ComponentActivity() {
                     composable("signUp") { SignUpScreen(navController) }
                     composable("initial") { InitialView(navController) }
                     composable("interesSimpleScreen") { InteresSimpleScreen(navController) }
+                    composable("interesCompuestoScreen") { InteresCompuestoScreen(navController) }
+                    composable("anualidadesScreen") { AnualidadesScreen(navController) }
+                    composable("gradAritmeticoScreen") { GradienteAritmeticoScreen(navController) }
+
                 }
             }
         }

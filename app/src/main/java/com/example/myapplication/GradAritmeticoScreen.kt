@@ -14,14 +14,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.Alignment
 
 @Composable
-fun InteresSimpleScreen(navController: NavHostController) {
+fun GradienteAritmeticoScreen(navController: NavHostController) {
+    var primerPago by remember { mutableStateOf("") }
+    var incrementoPago by remember { mutableStateOf("") }
     var tasaInteres by remember { mutableStateOf("") }
-    var tiempo by remember { mutableStateOf("") }
-    var valorFinal by remember { mutableStateOf("") }
-    var valorPresente by remember { mutableStateOf("") }
+    var periodos by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
+
+    // Estados para los checkboxes
+    var valorPresenteChecked by remember { mutableStateOf(false) }
+    var valorFuturoChecked by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -40,12 +45,12 @@ fun InteresSimpleScreen(navController: NavHostController) {
         }
 
         Text(
-            text = "Interés Simple",
+            text = "Gradiente Aritmético",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
 
-        // 🔽 Tarjeta Expandible con Definición y Ejemplo 🔽
+        // 🔽 Tarjeta Expandible con Definición 🔽
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
@@ -55,7 +60,7 @@ fun InteresSimpleScreen(navController: NavHostController) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("¿Qué es el Interés Simple?", fontWeight = FontWeight.Bold)
+                    Text("¿Qué es el Gradiente Aritmético?", fontWeight = FontWeight.Bold)
                     IconButton(onClick = { expanded = !expanded }) {
                         Icon(
                             imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
@@ -65,20 +70,41 @@ fun InteresSimpleScreen(navController: NavHostController) {
                 }
                 if (expanded) {
                     Text(
-                        text = "El interés simple es el pago por el uso de dinero prestado. Se calcula multiplicando la tasa de interés por el tiempo y el valor presente.\n\n" +
-                                "Fórmula:\nI = VP × i × t\n\n" +
-                                "Ejemplo: Si inviertes $1,000 con una tasa del 5% anual durante 3 años:\nI = 1000 × 0.05 × 3 = $150",
+                        text = "El gradiente aritmético es un método utilizado para calcular el valor de una serie de pagos crecientes o decrecientes a lo largo del tiempo.\n\n" +
+                                "Fórmula:\nVP = P × (1 - (1 + i)^-n) / i + G × ((1 - (1 + i)^-n) / i - n / (1 + i)^n) / i",
                         fontSize = 14.sp
                     )
                 }
             }
         }
 
-        // 🔹 Campos de entrada reordenados 🔹
+        // 🔹 Campos de entrada 🔹
+        OutlinedTextField(
+            value = primerPago,
+            onValueChange = { primerPago = it },
+            label = { Text("Primer Pago") },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF9130F2),
+                cursorColor = Color(0xFF9130F2)
+            )
+        )
+
+        OutlinedTextField(
+            value = incrementoPago,
+            onValueChange = { incrementoPago = it },
+            label = { Text("Incremento de Pago") },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF9130F2),
+                cursorColor = Color(0xFF9130F2)
+            )
+        )
+
         OutlinedTextField(
             value = tasaInteres,
             onValueChange = { tasaInteres = it },
-            label = { Text("Tasa de interés (%)") },
+            label = { Text("Tasa de Interés (%)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF9130F2),
@@ -87,9 +113,9 @@ fun InteresSimpleScreen(navController: NavHostController) {
         )
 
         OutlinedTextField(
-            value = tiempo,
-            onValueChange = { tiempo = it },
-            label = { Text("Tiempo (años)") },
+            value = periodos,
+            onValueChange = { periodos = it },
+            label = { Text("Períodos") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF9130F2),
@@ -97,34 +123,54 @@ fun InteresSimpleScreen(navController: NavHostController) {
             )
         )
 
-        OutlinedTextField(
-            value = valorFinal,
-            onValueChange = { valorFinal = it },
-            label = { Text("Valor Final") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF9130F2),
-                cursorColor = Color(0xFF9130F2)
-            )
-        )
+        // 🔹 Checkboxes alineados frente a frente 🔹
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp), // Margen a la izquierda
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f) // Asegura mismo ancho para ambos checkboxes
+            ) {
+                Checkbox(
+                    checked = valorPresenteChecked,
+                    onCheckedChange = {
+                        valorPresenteChecked = !valorPresenteChecked
+                        if (valorPresenteChecked) valorFuturoChecked = false
+                    },
+                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFF9130F2))
+                )
+                Text(
+                    text = "Valor Presente",
+                    fontSize = 16.sp
+                )
+            }
 
-        OutlinedTextField(
-            value = valorPresente,
-            onValueChange = { valorPresente = it },
-            label = { Text("Valor Presente") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF9130F2),
-                cursorColor = Color(0xFF9130F2)
-            )
-        )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f) // Asegura misma distribución en la fila
+            ) {
+                Checkbox(
+                    checked = valorFuturoChecked,
+                    onCheckedChange = {
+                        valorFuturoChecked = !valorFuturoChecked
+                        if (valorFuturoChecked) valorPresenteChecked = false
+                    },
+                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFF9130F2))
+                )
+                Text(
+                    text = "Valor Futuro",
+                    fontSize = 16.sp
+                )
+            }
+        }
 
         // 🔹 Botón de Calcular (Sin Acción) 🔹
         Button(
             onClick = { /* Aquí no se realiza ningún cálculo aún */ },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9130F2))
         ) {
-            Text("Calcular Interés", color = Color.White)
+            Text("Calcular Gradiente", color = Color.White)
         }
     }
 }

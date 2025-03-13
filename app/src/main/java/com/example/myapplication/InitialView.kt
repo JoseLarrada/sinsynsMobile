@@ -91,10 +91,10 @@ fun TransactionHistory(navController: NavHostController) {
 
         // Lista de transacciones con navegación
         val transactions = listOf(
-            "Tasa" to "tasaScreen",
+            "Anualidades" to "anualidadesScreen",
             "Interés Simple" to "interesSimpleScreen",
             "Interés Compuesto" to "interesCompuestoScreen",
-            "Anualidades" to "anualidadesScreen"
+            "Gradiente Aritmético" to "gradAritmeticoScreen"
         )
 
         transactions.forEach { (title, route) ->
