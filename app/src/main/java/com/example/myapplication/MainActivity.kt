@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
                     composable("signIn") { SignInScreen(navController) }
                     composable("signUp") { SignUpScreen(navController) }
                     composable("initial") { InitialView(navController) }
+                    composable("tasaInteresScreen") { TasaInteresScreen(navController)}
                     composable("interesSimpleScreen") { InteresSimpleScreen(navController) }
                     composable("interesCompuestoScreen") { InteresCompuestoScreen(navController) }
                     composable("anualidadesScreen") { AnualidadesScreen(navController) }

@@ -13,33 +13,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myapplication.viewModel.AnualidadesViewModel
 
 @Composable
-fun AnualidadesScreen(navController: NavHostController) {
-    var tasaAnualidad by remember { mutableStateOf("") }
-    var periodoPago by remember { mutableStateOf("") }
-    var anualidad by remember { mutableStateOf("") }
-    var valorNuevo by remember { mutableStateOf("") }
+fun TasaInteresScreen(navController: NavHostController) {
+    var numeroBase by remember { mutableStateOf("") }
+    var porcentaje by remember { mutableStateOf("") }
+    var resultado by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
-    val viewModel: AnualidadesViewModel = viewModel()
-    val anualidadesResponse by viewModel.uniValorResponse.observeAsState()
-
-    LaunchedEffect(anualidadesResponse) {
-        anualidadesResponse?.let {
-            valorNuevo = it.valorFinal.toString()
-        }
-    }
-
-    // Función de validación: permite solo números y un punto decimal
-    fun validateInput(input: String): String {
-        return input.filterIndexed { index, c ->
-            c.isDigit() || (c == '.' && input.indexOf('.') == index) // Solo un punto decimal permitido
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -49,7 +30,7 @@ fun AnualidadesScreen(navController: NavHostController) {
     ) {
         Spacer(modifier = Modifier.height(10.dp))
 
-        // 🔹 Botón de regresar 🔹
+        // Botón de regresar
         Button(
             onClick = { navController.popBackStack() },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9130F2))
@@ -58,12 +39,12 @@ fun AnualidadesScreen(navController: NavHostController) {
         }
 
         Text(
-            text = "Anualidades",
+            text = "Tasa de Interés",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
 
-        // 🔽 Tarjeta Expandible con Definición y Ejemplo 🔽
+        // Tarjeta Expandible con Definición y Ejemplo
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
@@ -73,7 +54,7 @@ fun AnualidadesScreen(navController: NavHostController) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("¿Qué son las Anualidades?", fontWeight = FontWeight.Bold)
+                    Text("¿Qué es la Tasa de Interés?", fontWeight = FontWeight.Bold)
                     IconButton(onClick = { expanded = !expanded }) {
                         Icon(
                             imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
@@ -83,22 +64,20 @@ fun AnualidadesScreen(navController: NavHostController) {
                 }
                 if (expanded) {
                     Text(
-                        text = "Las anualidades son una serie de pagos iguales que se realizan en intervalos regulares de tiempo. Pueden ser **ordinarias** (al final de cada período) o **anticipadas** (al inicio de cada período).\n\n" +
-                                "**Fórmula para Anualidades Ordinarias:**\n" +
-                                "A = VF * (i / (1 - (1 + i)^-n))\n\n" +
-                                "**Ejemplo:** Si deseas recibir $10,000 al final de cada año durante 5 años con una tasa del 6%:\n" +
-                                "A = 10,000 * (0.06 / (1 - (1.06)^-5)) ≈ $2,374.11",
+                        text = "La tasa de interés representa un porcentaje aplicado sobre una cantidad base para determinar el costo o ganancia de un préstamo o inversión.\n\n" +
+                                "**Ejemplo:** Si tienes $1,000 y la tasa es 5%, el interés será:\n" +
+                                "(1,000 * 5) / 100 = $50",
                         fontSize = 14.sp
                     )
                 }
             }
         }
 
-        // 🔹 Campos de entrada reordenados 🔹
+        // Campo para el número base
         OutlinedTextField(
-            value = tasaAnualidad,
-            onValueChange = { tasaAnualidad = validateInput(it) },
-            label = { Text("Tasa de Anualidad (%)") },
+            value = numeroBase,
+            onValueChange = { numeroBase = it },
+            label = { Text("Número base") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF9130F2),
@@ -106,10 +85,11 @@ fun AnualidadesScreen(navController: NavHostController) {
             )
         )
 
+        // Campo para el porcentaje
         OutlinedTextField(
-            value = periodoPago,
-            onValueChange = { periodoPago = validateInput(it) },
-            label = { Text("Período de Pago (años)") },
+            value = porcentaje,
+            onValueChange = { porcentaje = it },
+            label = { Text("Porcentaje (%)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF9130F2),
@@ -117,28 +97,18 @@ fun AnualidadesScreen(navController: NavHostController) {
             )
         )
 
-        OutlinedTextField(
-            value = anualidad,
-            onValueChange = { anualidad = validateInput(it) },
-            label = { Text("Anualidad") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF9130F2),
-                cursorColor = Color(0xFF9130F2)
-            )
-        )
-
-        // 🔹 Botón de Calcular (Sin Acción) 🔹
+        // Botón de calcular (sin lógica, solo visual)
         Button(
-            onClick = { viewModel.calcularAnualidades(tasaAnualidad,periodoPago, anualidad) },
+            onClick = { /* Aquí se llamará al backend para calcular el porcentaje */ },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9130F2))
         ) {
-            Text("Calcular Anualidad", color = Color.White)
+            Text("Calcular Porcentaje", color = Color.White)
         }
 
-        if (valorNuevo.isNotEmpty()) {
+        // Espacio reservado para mostrar el resultado
+        if (resultado.isNotEmpty()) {
             Text(
-                text = "Anualidad Calculada: $valorNuevo",
+                text = "Resultado: $resultado",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF9130F2),

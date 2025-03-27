@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import InteresViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
@@ -13,7 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun InteresSimpleScreen(navController: NavHostController) {
@@ -21,7 +24,28 @@ fun InteresSimpleScreen(navController: NavHostController) {
     var tiempo by remember { mutableStateOf("") }
     var valorFinal by remember { mutableStateOf("") }
     var valorPresente by remember { mutableStateOf("") }
+    var tasaInteresObj by remember { mutableStateOf("") }
+    var tiempoObj by remember { mutableStateOf("") }
+    var valorPresenteObj by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
+    val viewModel: InteresViewModel = viewModel()
+    val interesResponse by viewModel.interesSimpleResponse.observeAsState()
+
+    LaunchedEffect(interesResponse) {
+        interesResponse?.let {
+            valorFinal = it.interesSimple.toString()  // Muestra el resultado
+            tasaInteresObj = it.tasaInteres.toString()
+            tiempoObj = it.tiempo.toString()
+            valorPresenteObj = it.valorPresente.toString()
+        }
+    }
+
+    // Función de validación: permite solo números y un punto decimal
+    fun validateInput(input: String): String {
+        return input.filterIndexed { index, c ->
+            c.isDigit() || (c == '.' && input.indexOf('.') == index) // Solo un punto decimal permitido
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -77,7 +101,7 @@ fun InteresSimpleScreen(navController: NavHostController) {
         // 🔹 Campos de entrada reordenados 🔹
         OutlinedTextField(
             value = tasaInteres,
-            onValueChange = { tasaInteres = it },
+            onValueChange = { tasaInteres = validateInput(it) },
             label = { Text("Tasa de interés (%)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -88,7 +112,7 @@ fun InteresSimpleScreen(navController: NavHostController) {
 
         OutlinedTextField(
             value = tiempo,
-            onValueChange = { tiempo = it },
+            onValueChange = { tiempo = validateInput(it) },
             label = { Text("Tiempo (años)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -99,7 +123,7 @@ fun InteresSimpleScreen(navController: NavHostController) {
 
         OutlinedTextField(
             value = valorFinal,
-            onValueChange = { valorFinal = it },
+            onValueChange = { valorFinal = validateInput(it) },
             label = { Text("Valor Final") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -110,7 +134,7 @@ fun InteresSimpleScreen(navController: NavHostController) {
 
         OutlinedTextField(
             value = valorPresente,
-            onValueChange = { valorPresente = it },
+            onValueChange = { valorPresente = validateInput(it) },
             label = { Text("Valor Presente") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -121,10 +145,41 @@ fun InteresSimpleScreen(navController: NavHostController) {
 
         // 🔹 Botón de Calcular (Sin Acción) 🔹
         Button(
-            onClick = { /* Aquí no se realiza ningún cálculo aún */ },
+            onClick = {  viewModel.calcularInteresSimple(tasaInteres, tiempo, valorFinal, valorPresente) },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9130F2))
         ) {
             Text("Calcular Interés", color = Color.White)
+        }
+
+        if (valorFinal.isNotEmpty()) {
+            Text(
+                text = "Interés Calculado: $valorFinal",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF9130F2),
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            Text(
+                text = "Tasa de interes: $tasaInteresObj",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF9130F2),
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            Text(
+                text = "Tiempo: $tiempoObj",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF9130F2),
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            Text(
+                text = "Capital: $valorPresenteObj",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF9130F2),
+                modifier = Modifier.padding(top = 16.dp)
+            )
         }
     }
 }

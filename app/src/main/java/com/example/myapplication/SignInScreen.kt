@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,12 +20,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.myapplication.viewModel.AnualidadesViewModel
+import com.example.myapplication.viewModel.LoginViewModel
 
 @Composable
 fun SignInScreen(navController: NavHostController) {
     val primaryColor = Color(0xFF3574F2)
     val linkColor = Color(0xFF9130F2)
+    val viewModel: LoginViewModel = viewModel()
+    val loginResponse by viewModel.loginResponse.observeAsState();
+
+    var cedula by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -78,7 +88,7 @@ fun SignInScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Button(
-                    onClick = { navController.navigate("initial") },
+                    onClick = { viewModel.realizarLogin(cedula, password) }, // Llamar al ViewModel
                     colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
                     shape = RoundedCornerShape(15.dp),
                     modifier = Modifier

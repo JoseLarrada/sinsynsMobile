@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import InteresViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
@@ -13,7 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
@@ -23,6 +26,21 @@ fun InteresCompuestoScreen(navController: NavHostController) {
     var valorFuturo by remember { mutableStateOf("") }
     var valorPresente by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) } // Estado para la tarjeta desplegable
+    val viewModel: InteresViewModel = viewModel()
+    val interesResponse by viewModel.interesCompuestoResponse.observeAsState()
+
+    LaunchedEffect(interesResponse) {
+        interesResponse?.let {
+            valorFuturo = it.monto.toString()  // Muestra el resultado
+        }
+    }
+
+    // Función de validación: permite solo números y un punto decimal
+    fun validateInput(input: String): String {
+        return input.filterIndexed { index, c ->
+            c.isDigit() || (c == '.' && input.indexOf('.') == index) // Solo un punto decimal permitido
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -85,7 +103,7 @@ fun InteresCompuestoScreen(navController: NavHostController) {
         // 🔹 Campos de entrada
         OutlinedTextField(
             value = tasaInteres,
-            onValueChange = { tasaInteres = it },
+            onValueChange = { tasaInteres = validateInput(it) },
             label = { Text("Tasa de interés (%)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -96,7 +114,7 @@ fun InteresCompuestoScreen(navController: NavHostController) {
 
         OutlinedTextField(
             value = tiempo,
-            onValueChange = { tiempo = it },
+            onValueChange = { tiempo = validateInput(it) },
             label = { Text("Tiempo (años)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -107,7 +125,7 @@ fun InteresCompuestoScreen(navController: NavHostController) {
 
         OutlinedTextField(
             value = valorFuturo,
-            onValueChange = { valorFuturo = it },
+            onValueChange = { valorFuturo = validateInput(it) },
             label = { Text("Valor Futuro") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -118,7 +136,7 @@ fun InteresCompuestoScreen(navController: NavHostController) {
 
         OutlinedTextField(
             value = valorPresente,
-            onValueChange = { valorPresente = it },
+            onValueChange = { valorPresente = validateInput(it) },
             label = { Text("Valor Presente") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -129,10 +147,20 @@ fun InteresCompuestoScreen(navController: NavHostController) {
 
         // 🔹 Botón (sin cálculos por ahora)
         Button(
-            onClick = { /* Implementar cálculos después */ },
+            onClick = { viewModel.calcularInteresCompuesto(tasaInteres, tiempo, valorFuturo, valorPresente) },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9130F2))
         ) {
             Text("Calcular Interés", color = Color.White)
+        }
+
+        if (valorFuturo.isNotEmpty()) {
+            Text(
+                text = "Interés Calculado: $valorFuturo",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF9130F2),
+                modifier = Modifier.padding(top = 16.dp)
+            )
         }
     }
 }

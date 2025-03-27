@@ -13,8 +13,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.viewModel.AnualidadesViewModel
+import com.example.myapplication.viewModel.GradientesViewModel
 
 @Composable
 fun GradienteAritmeticoScreen(navController: NavHostController) {
@@ -23,6 +27,21 @@ fun GradienteAritmeticoScreen(navController: NavHostController) {
     var tasaInteres by remember { mutableStateOf("") }
     var periodos by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
+    var valorNuevo by remember { mutableStateOf("") }
+    val viewModel: GradientesViewModel = viewModel()
+    val anualidadesResponse by viewModel.uniValorResponse.observeAsState()
+
+    LaunchedEffect(anualidadesResponse) {
+        anualidadesResponse?.let {
+            valorNuevo = it.valorFinal.toString()
+        }
+    }
+
+    fun validateInput(input: String): String {
+        return input.filterIndexed { index, c ->
+            c.isDigit() || (c == '.' && input.indexOf('.') == index) // Solo un punto decimal permitido
+        }
+    }
 
     // Estados para los checkboxes
     var valorPresenteChecked by remember { mutableStateOf(false) }
@@ -81,7 +100,7 @@ fun GradienteAritmeticoScreen(navController: NavHostController) {
         // 🔹 Campos de entrada 🔹
         OutlinedTextField(
             value = primerPago,
-            onValueChange = { primerPago = it },
+            onValueChange = { primerPago = validateInput(it) },
             label = { Text("Primer Pago") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -92,7 +111,7 @@ fun GradienteAritmeticoScreen(navController: NavHostController) {
 
         OutlinedTextField(
             value = incrementoPago,
-            onValueChange = { incrementoPago = it },
+            onValueChange = { incrementoPago = validateInput(it)},
             label = { Text("Incremento de Pago") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -103,7 +122,7 @@ fun GradienteAritmeticoScreen(navController: NavHostController) {
 
         OutlinedTextField(
             value = tasaInteres,
-            onValueChange = { tasaInteres = it },
+            onValueChange = { tasaInteres = validateInput(it) },
             label = { Text("Tasa de Interés (%)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -114,7 +133,7 @@ fun GradienteAritmeticoScreen(navController: NavHostController) {
 
         OutlinedTextField(
             value = periodos,
-            onValueChange = { periodos = it },
+            onValueChange = { periodos = validateInput(it) },
             label = { Text("Períodos") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
@@ -167,10 +186,26 @@ fun GradienteAritmeticoScreen(navController: NavHostController) {
 
         // 🔹 Botón de Calcular (Sin Acción) 🔹
         Button(
-            onClick = { /* Aquí no se realiza ningún cálculo aún */ },
+            onClick = {
+                if(valorPresenteChecked){
+                    viewModel.calcularGradientePresente(primerPago.toDouble(),incrementoPago.toDouble(),tasaInteres.toDouble(),periodos.toDouble());
+                }else{
+                    viewModel.calcularGradienteFuturo(primerPago.toDouble(),incrementoPago.toDouble(),tasaInteres.toDouble(),periodos.toDouble());
+                }
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9130F2))
         ) {
             Text("Calcular Gradiente", color = Color.White)
+        }
+
+        if (valorNuevo.isNotEmpty()) {
+            Text(
+                text = "Gradiente Calculado: $valorNuevo",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF9130F2),
+                modifier = Modifier.padding(top = 16.dp)
+            )
         }
     }
 }
