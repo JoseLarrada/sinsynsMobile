@@ -91,8 +91,8 @@ fun TransactionHistory(navController: NavHostController) {
 
         // Lista de transacciones con navegación
         val transactions = listOf(
-            "Tasa de Interés" to "tasaInteresScreen", // Nuevo botón agregado
             "Anualidades" to "anualidadesScreen",
+            "Tasa de Interés" to "tasaInteresScreen", // Nuevo botón agregado
             "Interés Simple" to "interesSimpleScreen",
             "Interés Compuesto" to "interesCompuestoScreen",
             "Gradiente Aritmético" to "gradAritmeticoScreen"
