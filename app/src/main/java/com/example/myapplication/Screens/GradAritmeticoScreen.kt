@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.Screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -17,7 +17,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.Alignment
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myapplication.viewModel.AnualidadesViewModel
 import com.example.myapplication.viewModel.GradientesViewModel
 
 @Composable
@@ -188,9 +187,9 @@ fun GradienteAritmeticoScreen(navController: NavHostController) {
         Button(
             onClick = {
                 if(valorPresenteChecked){
-                    viewModel.calcularGradientePresente(primerPago.toDouble(),incrementoPago.toDouble(),tasaInteres.toDouble(),periodos.toDouble());
+                    viewModel.calcularGradientePresente(primerPago.toDouble(),incrementoPago.toDouble(),tasaInteres.toDouble()/100,periodos.toDouble());
                 }else{
-                    viewModel.calcularGradienteFuturo(primerPago.toDouble(),incrementoPago.toDouble(),tasaInteres.toDouble(),periodos.toDouble());
+                    viewModel.calcularGradienteFuturo(primerPago.toDouble(),incrementoPago.toDouble(),tasaInteres.toDouble()/100,periodos.toDouble());
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9130F2))

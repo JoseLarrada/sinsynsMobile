@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.Screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.myapplication.viewModel.AnualidadesViewModel
+import com.example.myapplication.R
 import com.example.myapplication.viewModel.LoginViewModel
 
 @Composable
@@ -31,6 +31,16 @@ fun SignInScreen(navController: NavHostController) {
     val linkColor = Color(0xFF9130F2)
     val viewModel: LoginViewModel = viewModel()
     val loginResponse by viewModel.loginResponse.observeAsState();
+
+    LaunchedEffect(loginResponse) {
+        if (loginResponse != null) {
+            // Aquí rediriges a la pantalla principal o home
+            navController.navigate("initial") {
+                // Esto elimina la pantalla de login del backstack
+                popUpTo("signIn") { inclusive = true }
+            }
+        }
+    }
 
     var cedula by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

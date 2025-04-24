@@ -17,13 +17,15 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val request = LoginRequest(
-                    identificacion = identificacion,
-                    contraseña = contraseña
+                    identification = identificacion,
+                    password = contraseña
                 )
+                println(request)
                 val response = RetrofitClient.apiService.iniciarSesion(request)
-
+                println(response)
                 if (response.isSuccessful) {
                     _loginResponse.postValue(response.body())
+                    println(response.body())
                 } else {
                     println("Error en la API (Login): ${response.errorBody()?.string()}")
                 }

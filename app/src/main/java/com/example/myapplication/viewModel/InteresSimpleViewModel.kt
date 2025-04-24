@@ -33,6 +33,7 @@ class InteresViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     _interesSimpleResponse.postValue(response.body())
                 } else {
+                    println(request)
                     println("Error en la API (Interés Simple): ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {

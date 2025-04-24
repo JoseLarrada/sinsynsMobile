@@ -18,7 +18,7 @@ class GradientesViewModel : ViewModel() {
             try {
                 val request = GradienteRequest(primerPago, incrementoPago, tasaInteres, periodos)
                 val response = RetrofitClient.apiService.calcularGradienteFuturo(request)
-
+                println(request)
                 if (response.isSuccessful) {
                     _uniValorResponse.postValue(response.body())
                 } else {

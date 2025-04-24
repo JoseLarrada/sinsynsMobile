@@ -68,4 +68,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
+    implementation("androidx.compose.foundation:foundation:1.7.0")
 }
